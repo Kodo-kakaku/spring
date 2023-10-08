@@ -1,4 +1,0 @@
-application:
-  file-path: questions.csv
-  trueAnswers: 4
-  locale: en_US
