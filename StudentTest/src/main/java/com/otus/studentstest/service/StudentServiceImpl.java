@@ -4,6 +4,7 @@ import com.otus.studentstest.config.ApplicationSettings;
 import com.otus.studentstest.domain.Student;
 import com.otus.studentstest.service.consoleReaderService.ConsoleReaderService;
 import com.otus.studentstest.service.consoleWriterService.ConsoleWriterService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.shell.standard.ShellComponent;
@@ -11,9 +12,11 @@ import org.springframework.shell.standard.ShellComponent;
 import java.io.IOException;
 import java.util.Locale;
 
+@Data
 @ShellComponent
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
+
     private final ConsoleReaderService readConsoleService;
 
     private final ConsoleWriterService outputQuestionsService;
@@ -22,12 +25,12 @@ public class StudentServiceImpl implements StudentService {
 
     private final MessageSource messageSource;
 
-    //private int correctAnswerCount;
+    private int correctAnswerCount;
 
     @Override
     public void startTesting() throws IOException {
         int questionCount = outputQuestionsService.getCountQuestions();
-        int correctAnswerCount = 0;
+        correctAnswerCount = 0;
 
         for (int i = 0; i < questionCount; i++) {
             outputQuestionsService.outputQuestion(i);
@@ -38,16 +41,17 @@ public class StudentServiceImpl implements StudentService {
             }
         }
 
-        if (correctAnswerCount >= applicationSettings.getTrueAnswers())
+        if (correctAnswerCount >= applicationSettings.getTrueAnswers()) {
             System.out.println(messageSource.getMessage("test.result.completed", null, Locale.US));
-        else
+        } else {
             System.out.println(messageSource.getMessage("test.result.failed", null, Locale.US));
+        }
 
         System.out.println(messageSource.getMessage("student.result",
                 new Object[]{correctAnswerCount + "/" + questionCount}, Locale.US));
     }
 
-    @Override //todo test
+    @Override
     public Student loginStudent() throws IOException {
         Student student = new Student();
 
